@@ -14,10 +14,22 @@ namespace WPFLazyTreeView.ViewModels
         public MainViewModel()
         {
             PathNodes = new();
-            PathNodes.Add(new LazyTreeNode { Key = "1", Text = "홍길동" });
-            PathNodes.Add(new LazyTreeNode { Key = "2", Text = "유관순" });
+            PathNodes.Add(CreateNode("1", "홍길동"));
+            PathNodes.Add(CreateNode("2", "유관순"));
         }
 
         public ObservableCollection<LazyTreeNode> PathNodes { get; set; }
+
+        public LazyTreeNode CreateNode(string key, string text)
+        {
+            var node = new LazyTreeNode { Key = key, Text = text };
+            node.OnExpand += Node_OnExpanded;
+            return node;
+        }
+
+        private void Node_OnExpanded(LazyTreeNode node)
+        {
+            node.Children.Add(CreateNode("3","가나다"));
+        }
     }
 }

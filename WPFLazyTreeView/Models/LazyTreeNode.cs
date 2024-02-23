@@ -33,7 +33,7 @@ namespace WPFLazyTreeView.Models
 
         public LazyTreeNode? Parent { get; set; }
 
-        public ObservableCollection<LazyTreeNode>? Children
+        public ObservableCollection<LazyTreeNode> Children
         {
             get
             {
