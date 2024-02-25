@@ -57,9 +57,15 @@ namespace WPFLazyTreeView.Models
                 _isExpanded=value; 
                 if (_isExpanded)
                 {
+                    Children.Clear();
                     OnExpand?.Invoke(this);
                 }
             }
+        }
+
+        public void AddDummyNode()
+        {
+            Children.Add(new LazyTreeNode());
         }
     }
 }

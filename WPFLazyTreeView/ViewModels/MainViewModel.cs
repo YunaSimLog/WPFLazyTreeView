@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPFLazyTreeView.Models;
+using WPFLazyTreeView.Utils;
 
 namespace WPFLazyTreeView.ViewModels
 {
@@ -14,8 +16,7 @@ namespace WPFLazyTreeView.ViewModels
         public MainViewModel()
         {
             PathNodes = new();
-            PathNodes.Add(CreateNode("1", "홍길동"));
-            PathNodes.Add(CreateNode("2", "유관순"));
+            AddDriveNodes();
         }
 
         public ObservableCollection<LazyTreeNode> PathNodes { get; set; }
@@ -24,12 +25,34 @@ namespace WPFLazyTreeView.ViewModels
         {
             var node = new LazyTreeNode { Key = key, Text = text };
             node.OnExpand += Node_OnExpanded;
+
+            if (DirectoryUtils.IsDirectoryOrFileExists(key))
+            {
+                node.AddDummyNode();
+            }
+
             return node;
         }
 
         private void Node_OnExpanded(LazyTreeNode node)
         {
-            node.Children.Add(CreateNode("3","가나다"));
+            foreach (var di in DirectoryUtils.GetDirectories(node.Key))
+            {
+                node.Children.Add(CreateNode(di.FullName, di.Name));
+            }
+
+            foreach (var fi in DirectoryUtils.GetFiles(node.Key))
+            {
+                node.Children.Add(CreateNode(fi.FullName, fi.Name));
+            }
+        }
+
+        private void AddDriveNodes()
+        {
+            foreach (var driveInfo in DriveInfo.GetDrives())
+            {
+                PathNodes.Add(CreateNode(driveInfo.Name, driveInfo.Name));
+            }
         }
     }
 }
